@@ -1,0 +1,14 @@
+foreach ($computer in (Get-adcomputer -Filter *))
+{
+    
+    
+    if ((test-path -path "C:\opticuslogs\$($computer.name)\") -ne $true)
+    {
+        new-item -itemtype directory -path "c:\opticuslogs\$($computer.name)"
+    }
+
+    if ((test-path -path "\\$($computer.name)\c$\RetailJava\Application.log") -eq $true)
+    {
+        copy-item -path "\\$($computer.name)\c$\RetailJava\Application.log" -Destination "C:\opticuslogs\$($computer.name)\"
+    }
+}
