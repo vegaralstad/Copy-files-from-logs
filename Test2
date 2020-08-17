@@ -1,0 +1,41 @@
+Import-module ActiveDirectory -ErrorAction SilentlyContinue
+
+if ($error) 
+{
+    Write-Error "Unable to load ActiveDirectory module: "
+    $error
+    break
+}
+
+$date1 = "2020-08-04" # Fyll in data year-mm-dd for Catalina log fil 
+
+if((test-path -path "C:\opticuslogs\") -eq $true)
+{
+    remove-item -Path "C:\opticuslogs\" -Recurse
+}
+
+foreach ($computer in (Get-adcomputer -Filter *))
+{
+    if((test-connection -quiet -count 1 -computername $computer.name) -ne $true) {continue}
+    
+    if ((test-path -path "C:\opticuslogs\$($computer.name)\") -ne $true)
+    {
+        new-item -itemtype directory -path "c:\opticuslogs\$($computer.name)"
+    }
+    if ((test-path -path "\\$($computer.name)\c$\RetailJava\Application.log") -eq $true)
+    {
+        copy-item -path "\\$($computer.name)\c$\RetailJava\Application.log" -Destination "C:\opticuslogs\$($computer.name)\"
+    }
+    if ((test-path -path "\\$($computer.name)\c$\pdq\logs\") -eq $true)
+    {
+        if ((test-path -path "C:\opticuslogs\$($computer.name)\logs") -ne $true)
+        {
+            new-item -itemtype directory -path "C:\opticuslogs\$($computer.name)\logs"
+        }
+        copy-item -path "\\$($computer.name)\c$\pdq\logs\*" -Destination "C:\opticuslogs\$($computer.name)\logs"
+    }
+    if ((test-path -path "\\$($computer.name)\c$\PDQ\Tomcat5.5\logs\Catalina.$date1.log") -eq $true)
+    {
+        copy-item -path "\\$($computer.name)\c$\PDQ\Tomcat5.5\logs\Catalina.$date1.log" -Destination "C:\opticuslogs\$($computer.name)\"
+    }
+}
