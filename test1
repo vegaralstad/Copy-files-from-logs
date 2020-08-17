@@ -1,14 +1,33 @@
+Import-module ActiveDirectory -ErrorAction SilentlyContinue
+
+if ($error) {break}
+
 foreach ($computer in (Get-adcomputer -Filter *))
 {
-    
+    if((test-connection -quit -count 1 -computername $computer.name) -ne $true) {continue}
     
     if ((test-path -path "C:\opticuslogs\$($computer.name)\") -ne $true)
     {
         new-item -itemtype directory -path "c:\opticuslogs\$($computer.name)"
     }
-
     if ((test-path -path "\\$($computer.name)\c$\RetailJava\Application.log") -eq $true)
     {
         copy-item -path "\\$($computer.name)\c$\RetailJava\Application.log" -Destination "C:\opticuslogs\$($computer.name)\"
+    }
+    if ((test-path -path "\\$($computer.name)\c$\") -eq $true)
+    {
+        copy-item -path "\\$($computer.name)\c$\" -Destination "C:\opticuslogs\$($computer.name)\"
+    }
+    if ((test-path -path "\\$($computer.name)\c$\") -eq $true)
+    {
+        copy-item -path "\\$($computer.name)\c$\" -Destination "C:\opticuslogs\$($computer.name)\"
+    }
+    if ((test-path -path "\\$($computer.name)\c$\") -eq $true)
+    {
+        copy-item -path "\\$($computer.name)\c$\" -Destination "C:\opticuslogs\$($computer.name)\"
+    }
+    if ((test-path -path "\\$($computer.name)\c$\") -eq $true)
+    {
+        copy-item -path "\\$($computer.name)\c$\" -Destination "C:\opticuslogs\$($computer.name)\"
     }
 }
